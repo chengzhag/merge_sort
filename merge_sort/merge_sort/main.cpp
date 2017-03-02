@@ -106,7 +106,7 @@ double toc() {
 template<typename T> void showProgress(T i, T total, long times = 100) {
 	if (times > total)times = total;
 	if ((i + 1) % (total / times) == 0) {
-		cout << "\r" << (double)(i + 1) * 100 / total << "%";
+		cout << "\r"<<fixed<<setprecision(2) << (double)(i + 1) * 100 / total << "%";
 	}
 }
 
@@ -119,10 +119,10 @@ long main()
 	//mergeSort(v,v);
 	//cout << v << endl;
 
-	long num = 100;
+	long num = 30;
 	vector<double> y;
 	y.reserve(num);
-	for (long i = 0; i < num; i++)
+	for (long i = 1; i <= num; i++)
 	{
 		double timeUsed;
 		vector<long> v(i * 100000);
