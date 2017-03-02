@@ -4,26 +4,32 @@
 #include <iomanip>
 #include <math.h>
 #include <vector>
+#include <opencv2/opencv.hpp>
 
 using namespace std;
 
-const int length = 11;
-vector<int> v(length);
-
-ostream& operator<< (ostream& out, vector<int>& _vec)
+ostream& operator<< (ostream& out, vector<long>& _vec)
 {
-	vector<int>::const_iterator it = _vec.begin();
+	vector<long>::const_iterator it = _vec.begin();
 	for (; it != _vec.end(); ++it)
 		out << *it << "\t";
 	return out;
 }
 
-void initVector(vector<int> &v, bool doDisplay = true)
+ostream& operator<< (ostream& out, vector<double>& _vec)
 {
-	vector<int>::iterator it;
+	vector<double>::const_iterator it = _vec.begin();
+	for (; it != _vec.end(); ++it)
+		out << setprecision(3) << fixed << *it << endl;
+	return out;
+}
+
+void initVector(vector<long> &v, bool doDisplay = true)
+{
+	vector<long>::iterator it;
 	for (it = v.begin(); it != v.end(); it++)
 	{
-		*it = rand()%100;
+		*it = rand();
 	}
 	if (doDisplay)
 	{
@@ -31,9 +37,9 @@ void initVector(vector<int> &v, bool doDisplay = true)
 	}
 }
 
-void mergeSort(vector<int> src, vector<int> &dst)
+void mergeSort(vector<long> src, vector<long> &dst)
 {
-	int lengthSrc = src.size();
+	long lengthSrc = src.size();
 
 	if (lengthSrc <= 1)
 	{
@@ -41,19 +47,19 @@ void mergeSort(vector<int> src, vector<int> &dst)
 	}
 	else
 	{
-		int divivePos = lengthSrc / 2;
+		long divivePos = lengthSrc / 2;
 
-		vector<int> low(src.begin(), src.begin() + divivePos);
-		vector<int> high(src.begin() + divivePos, src.end());
+		vector<long> low(src.begin(), src.begin() + divivePos);
+		vector<long> high(src.begin() + divivePos, src.end());
 
 		mergeSort(low, low);
 		mergeSort(high, high);
 
 		dst.clear();
 		dst.reserve(lengthSrc);
-		int posLow = 0;
-		int posHigh = 0;
-		for (int i = 0; i < lengthSrc; i++) {
+		long posLow = 0;
+		long posHigh = 0;
+		for (long i = 0; i < lengthSrc; i++) {
 
 			if (low[posLow] < high[posHigh])
 			{
@@ -87,12 +93,47 @@ void mergeSort(vector<int> src, vector<int> &dst)
 	}
 }
 
-int main() 
+
+clock_t  ticTime;
+void tic() {
+	ticTime = clock();
+}
+double toc() {
+	clock_t tocTime = clock();
+	return (double)(tocTime - ticTime) / CLOCKS_PER_SEC;
+}
+
+template<typename T> void showProgress(T i, T total, long times = 100) {
+	if (times > total)times = total;
+	if ((i + 1) % (total / times) == 0) {
+		cout << "\r" << (double)(i + 1) * 100 / total << "%";
+	}
+}
+
+long main() 
 {
-	cout << "原始数组：\n";
-	initVector(v);
-	mergeSort(v,v);
-	cout << v << endl;
+	//const long length = 11;
+	//vector<long> v(length);
+	//cout << "原始数组：\n";
+	//initVector(v);
+	//mergeSort(v,v);
+	//cout << v << endl;
+
+	long num = 100;
+	vector<double> y;
+	y.reserve(num);
+	for (long i = 0; i < num; i++)
+	{
+		double timeUsed;
+		vector<long> v(i * 100000);
+		initVector(v, false);
+		tic();
+		mergeSort(v, v);
+		timeUsed = toc();
+		y.push_back(timeUsed);
+		showProgress(i, num);
+	}
+	cout << endl << y << endl;
 
 	return 0;
 }
